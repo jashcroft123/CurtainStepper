@@ -71,8 +71,31 @@ void setup() {
   sunsetTimeCheck();
 }
 
+
 void loop() {
   requestCheck();
   timeUpdate();
   state();
+}
+
+
+void state() {
+  //function check the state of curtains and returns via console
+  switch (curtainState) {
+    case open:
+      openState();
+      break;
+
+    case closed:
+      closedState();
+      break;
+
+    case moving:
+      operateMotor();
+      break;
+
+    default:
+      error();
+      break;
+  }
 }

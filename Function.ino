@@ -8,27 +8,6 @@ void timeUpdate() {
   }
 }
 
-void state() {
-  //function check the state of curtains and returns via console
-  switch (curtainState) {
-    case open:
-      openState();
-      break;
-
-    case closed:
-      closedState();
-      break;
-
-    case moving:
-      operateMotor();
-      break;
-
-    default:
-      error();
-      break;
-  }
-}
-
 void openState () {
   if (printBit == true) {
     Particle.publish("Curtain State", String("Open"));
@@ -122,32 +101,6 @@ void buttonRequest() {
   }
 }
 
-int cloudRequest(String percentClosedRequest){
-    int request = percentClosedRequest.toInt();
-    if (request >100)
-        request = 100;
-    else if (request < 0)
-        request = 0;
-
-    if(curtainState != moving){
-        if (request < percentClosed) {
-            numOfSteps = percentClosed - request;
-            curtainState = closed;
-        }
-        else if (request>percentClosed){
-            curtainState = open;
-            numOfSteps = request - percentClosed;
-        }
-        numOfSteps = numOfSteps * stepsPerTotal/100;
-
-        if (numOfSteps != 0)
-        buttonRequest();
-    }
-    else{
-        buttonRequest();
-    }
-    return request;
-}
 
 void sunRequest() {
   Particle.syncTime();
@@ -239,25 +192,4 @@ void write2Console(int i, int sunHour, int sunMinute, int sunSeconds){
     if (sunSeconds < 10)
         sun2Console[i] += "0";
     sun2Console[i] += String(sunSeconds);
-}
-
-int changeStateCloud(String command) {
-  command.toLowerCase();
-
-  if(command == "open" || command == "1")
-  {
-    percentClosed = 0;
-    oldCurtainState = curtainState;
-    curtainState = open;
-    return open;
-  }
-
-  else if (command =="closed" || command == "2"){
-     percentClosed = 100;
-     oldCurtainState = curtainState;
-     curtainState = closed;
-     return closed;
-  }
-
-  else return -1;
 }
